@@ -1,0 +1,13 @@
+node_modules/
+android/
+dist/
+*.tgz
+
+# Never commit anything derived from real people
+colproj_export_*.json
+*.export.json
+www/models/*.jpg
+www/models/*.jpeg
+www/models/*.png
+photos/
+dataset/

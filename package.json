@@ -1,0 +1,21 @@
+{
+  "name": "colproj",
+  "version": "0.1.0",
+  "description": "Classroom attendance by face recognition, on-device.",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve www -l 8080",
+    "test": "node test/logic.test.mjs && node test/flow.test.mjs && node test/dist.test.mjs",
+    "build": "python3 build.py",
+    "android:add": "npx cap add android",
+    "android:sync": "python3 build.py && npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "fake-indexeddb": "^6.2.5",
+    "jsdom": "^25.0.1"
+  }
+}
