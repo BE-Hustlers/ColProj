@@ -1,9 +1,0 @@
-# Every change needs a review from a maintainer before it can merge.
-# Replace these with the GitHub usernames of the two working members.
-*                 @YOUR-USERNAME @TEAMMATE-USERNAME
-
-# The parts where a well-meaning change can quietly break attendance
-# correctness. Same owners today, but called out so the intent survives.
-/www/js/engine.js @YOUR-USERNAME @TEAMMATE-USERNAME
-/www/js/core.js   @YOUR-USERNAME @TEAMMATE-USERNAME
-/test/            @YOUR-USERNAME @TEAMMATE-USERNAME
