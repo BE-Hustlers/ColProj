@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "npx --yes serve www -l 8080",
+    "pretest": "python3 build.py || python build.py",
     "test": "node test/logic.test.mjs && node test/flow.test.mjs && node test/dist.test.mjs",
     "build": "python3 build.py",
     "android:add": "npx cap add android",
