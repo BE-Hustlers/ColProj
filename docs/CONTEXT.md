@@ -3,7 +3,8 @@
 Paste this into a fresh session before asking for changes. It describes what
 exists, why it is built the way it is, and what must not be broken.
 
-Written 26 September 2026. Project review: 1 October 2026.
+Written 26 September 2026, revised after first CI run.
+Project review: 1 October 2026.
 
 ---
 
@@ -57,9 +58,12 @@ These mattered and may matter again.
 
 ```
 colproj/
-  README.md                 build, deployment, decisions to defend
+  README.md                 build, deployment, commit guide, decisions to defend
   docs/MANUAL.md            end-user manual, screen by screen
   docs/CONTEXT.md           this file
+  docs/SESSION-2026-09-26.md  what was built and why, as a dated record
+  .github/workflows/test.yml  runs npm test on every PR against main
+  .github/pull_request_template.md
   build.py                  inlines www/ into dist/colproj.html
   capacitor.config.json     appId in.edu.college.colproj, webDir www
   package.json              scripts: start, test, build, android:*
@@ -342,6 +346,11 @@ that model fine-tuning cannot prevent.
 npm test          # all three suites, no browser needed
 ```
 
+`pretest` in `package.json` runs `build.py` first. This is load-bearing:
+`dist/` is gitignored, so on a fresh clone `dist/colproj.html` does not exist
+and `dist.test.mjs` has nothing to read. Do not remove the hook, and do not
+commit `dist/` to work around it.
+
 `logic.test.mjs` loads sources into a `node:vm` context; `flow.test.mjs` and
 `dist.test.mjs` use jsdom with `fake-indexeddb` and `node:crypto.webcrypto`.
 Canvas is stubbed — pixel values are never read in simulator mode, so this is
@@ -360,6 +369,12 @@ first appeared:
 - **The global-lexical-scope point from §4.** The bridge script is required;
   do not remove it.
 
+A third was found by CI rather than locally: `dist.test.mjs` read a file that
+only existed because an earlier build had left it there. A fresh clone failed.
+Fixed with the `pretest` hook above. Worth keeping in mind that two of the three
+suites depend on build artefacts or shims, so "passes on my machine" is weaker
+evidence here than usual.
+
 There is a Python reference implementation of the full real pipeline
 (`ref_pipeline.py`, not shipped) that was used to validate the ONNX decode
 before porting to JS. Measured on a real photograph: detection score 0.808,
@@ -370,6 +385,39 @@ embeddings on the same image is the fastest way to isolate it.
 
 **Untested**: real ONNX inference in a browser, actual camera capture, visual
 layout, the RetinaFace decode path, and Capacitor/Android behaviour.
+
+---
+
+## 8a. Repository conventions
+
+The repository is public. Treat these as constraints on any change.
+
+**Never committed**: real student photographs, and any JSON produced by the
+app's *Export everything* button. That export holds a face descriptor for every
+enrolled person — not a photograph, not reversible into one, but still
+biometric-derived personal data. `.gitignore` covers `colproj_export_*.json`,
+`*.export.json`, image files under `www/models/`, and `photos/` and `dataset/`.
+Check it still does before adding anything new.
+
+**Generated, therefore excluded**: `dist/` (rebuild with `build.py`),
+`android/` (regenerate with `npx cap add android`), `node_modules/`.
+
+**Committed despite being binary**: the two `.onnx` files and the onnxruntime
+WASM, roughly 27 MB total. The project does not build without them and the team
+has no time to debug Git LFS. This is a deliberate trade, not an oversight.
+
+**`main` is protected** by a ruleset: pull request required, `test` status check
+required, force pushes and deletions blocked, empty bypass list. Required
+approvals is deliberately **0**, because GitHub forbids approving your own pull
+request and the team has one reliable reviewer — at 1 approval the primary
+author would lock themselves out. Every change still goes through a PR where CI
+runs. There is no CODEOWNERS file; one was added and removed for the same
+reason.
+
+**Regenerating `android/` silently drops the `CAMERA` permission** from
+`AndroidManifest.xml`, and the camera then fails with no error. This has its own
+entry in the manual's troubleshooting section because it is not discoverable
+from the symptom.
 
 ---
 
@@ -411,7 +459,11 @@ layout, the RetinaFace decode path, and Capacitor/Android behaviour.
   have surfaced in front of examiners.
 
 Rebuild the single file with `python3 build.py` after any change to `www/`, or
-the published/shared copy will be stale.
+the published/shared copy will be stale. `npm test` now does this for you.
+
+Every change goes through a pull request; `main` refuses direct pushes. CI runs
+`npm ci && npm test` on Node 22, so anything that depends on local state will
+fail there even when it passes locally.
 
 ---
 
