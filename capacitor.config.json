@@ -1,0 +1,13 @@
+{
+  "appId": "in.edu.college.colproj",
+  "appName": "ColProj",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

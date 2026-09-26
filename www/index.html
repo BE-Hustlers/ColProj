@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16233a">
+<title>ColProj — classroom attendance</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app" aria-live="polite">
+  <div class="view login"><div class="mark">ColProj</div><div class="sub">Starting…</div></div>
+</div>
+
+<script src="js/ort.wasm.min.js"></script>
+<script src="js/core.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/admin.js"></script>
+<script>
+(async function boot() {
+  // ORT ships its wasm beside the scripts; point it there so the app works offline.
+  if (typeof ort !== 'undefined') {
+    ort.env.wasm.wasmPaths = './js/';
+    ort.env.wasm.numThreads = 1;
+    ort.env.logLevel = 'error';
+  }
+  try {
+    await Settings.load();
+    await seedIfEmpty();
+    await Settings.load();
+    go('login', {}, true);
+    // warm the engine in the background; sign-in does not wait on it
+    ensureEngine().catch(e => console.warn('engine warm-up:', e.message));
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div class="view"><div class="panel"><h3>Could not start</h3>
+       <p class="note bad">${String(e.message || e)}</p>
+       <p class="note">This build needs IndexedDB. Private-browsing windows in some browsers block it.</p>
+       </div></div>`;
+  }
+})();
+</script>
+</body>
+</html>
