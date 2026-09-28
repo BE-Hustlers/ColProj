@@ -16,11 +16,16 @@ OUT = ROOT / 'dist' / 'colproj.html'
 SKIP = {'js/ort.wasm.min.js'}
 
 
+def read(p):
+    # encoding is mandatory: Windows defaults to cp1252 and the sources are UTF-8
+    return p.read_text(encoding='utf-8')
+
+
 def main():
-    html = (WWW / 'index.html').read_text()
+    html = read(WWW / 'index.html')
 
     # stylesheet
-    css = (WWW / 'css' / 'app.css').read_text()
+    css = read(WWW / 'css' / 'app.css')
     html = html.replace('<link rel="stylesheet" href="css/app.css">',
                         '<style>\n' + css + '\n</style>')
 
@@ -32,7 +37,7 @@ def main():
         if src in SKIP:
             return ('<!-- onnxruntime omitted from the single-file build; '
                     'the simulator engine runs instead -->')
-        code = (WWW / src).read_text()
+        code = read(WWW / src)
         return '<script>\n' + code + '\n</script>'
 
     html = re.sub(r'<script src="([^"]+)"></script>', inline, html)
@@ -43,7 +48,7 @@ def main():
         print('warning: unresolved external references:', leftover, file=sys.stderr)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(html)
+    OUT.write_text(html, encoding='utf-8')
     print(f'{OUT}  {len(html) / 1024:.0f} KB')
 
 
