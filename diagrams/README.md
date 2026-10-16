@@ -3,19 +3,31 @@
 Two views of ColProj, both derived from the source in `www/` rather than from the
 pitch deck.
 
-| File | Diagram | Answers |
+| File | What it is | Size |
 |---|---|---|
-| [data-flow-level-1.md](data-flow-level-1.md) | Data flow diagram, level 1 | What data moves, through which process, into which store |
-| [architecture.md](architecture.md) | Architecture diagram | How the code is layered, what depends on what, where the seams are |
+| [data-flow-level-1.md](data-flow-level-1.md) | Level-1 data flow diagram — source | |
+| [architecture.md](architecture.md) | Architecture diagram, plus the trust-boundary inset — source | |
+| [data-flow-level-1.png](data-flow-level-1.png) | DFD rendered for the report | 5521 × 1539 |
+| [architecture.png](architecture.png) | Architecture rendered for the report | 2352 × 3791 |
+| [architecture-runtime-boundary.png](architecture-runtime-boundary.png) | The inset from `architecture.md` on its own | 998 × 344 |
 
-Both files are Markdown with [Mermaid](https://mermaid.js.org/) diagrams inside.
-GitHub renders them directly, so the diagrams stay reviewable in a pull request
-rather than going stale as exported images. In VS Code, install a Mermaid
-preview extension; to produce pictures for the report:
+The Markdown files are the source of truth: [Mermaid](https://mermaid.js.org/)
+text that GitHub renders inline, so a reviewer can read and diff the diagram in
+the pull request. The PNGs are snapshots of exactly that source, produced for
+pasting into the report without anyone needing a toolchain.
+
+Regenerate the PNGs after any change to the Markdown. The `--size` flag is not
+optional: without it mermaid-cli renders into its default 800 px page and the
+image comes out squashed.
 
 ```bash
-npx -y @mermaid-js/mermaid-cli -i diagrams/architecture.md -o diagrams/architecture.svg
+npx -y @mermaid-js/mermaid-cli -i diagrams/data-flow-level-1.md -o /tmp/dfd.png --size 5521 -s 1
+npx -y @mermaid-js/mermaid-cli -i diagrams/architecture.md   -o /tmp/arch.png --size 3791 -s 1
 ```
+
+mermaid-cli appends a diagram index when the input is Markdown, so rename the
+outputs: `dfd-1.png` → `data-flow-level-1.png`, `arch-1.png` →
+`architecture.png`, `arch-2.png` → `architecture-runtime-boundary.png`.
 
 ## How to read the data flow diagram
 
@@ -54,6 +66,6 @@ The three points a review is likely to probe:
 ## Keeping these current
 
 The diagrams name real functions and modules. If a screen, a process or a store
-changes, update the matching table row in the same pull request — otherwise the
-diagram quietly becomes the thing the README warns about for `dist/colproj.html`,
-a document that disagrees with the source.
+changes, update the matching table row and re-export the PNGs in the same pull
+request — otherwise the diagram quietly becomes the thing the README warns about
+for `dist/colproj.html`, a document that disagrees with the source.
