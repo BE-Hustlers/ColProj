@@ -3,6 +3,11 @@
 Paste this into a fresh session before asking for changes. It describes what
 exists, why it is built the way it is, and what must not be broken.
 
+For the full human-readable walkthrough of the code — every file, every function,
+every decision and every runtime flow, plus the demo and review playbooks — read
+`docs/CODEBOOK.md`. This file stays deliberately compact; the codebook is the long
+form and is the master document for the codebase.
+
 Written 26 September 2026, revised after first CI run.
 Project review: 1 October 2026.
 
@@ -62,6 +67,8 @@ colproj/
   docs/MANUAL.md            end-user manual, screen by screen
   docs/CONTEXT.md           this file
   docs/SESSION-2026-09-26.md  what was built and why, as a dated record
+  docs/CODEBOOK.md          master document: the whole codebase, file by file
+  diagrams/                 architecture + level-1 data-flow diagrams (.md sources, .png exports)
   .github/workflows/test.yml  runs npm test on every PR against main
   .github/pull_request_template.md
   build.py                  inlines www/ into dist/colproj.html

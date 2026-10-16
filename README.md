@@ -11,10 +11,12 @@ the college ERP.
 
 | File | For |
 |---|---|
+| `docs/CODEBOOK.md` | **The master document.** The whole codebase — every file, every decision, every flow — written to be read side by side with the source. Start here |
 | `README.md` | Building, deploying, and the decisions to defend at a review |
 | `docs/MANUAL.md` | Complete user manual, screen by screen, plus a demo script |
 | `docs/CONTEXT.md` | Architecture and handoff notes — paste into a fresh AI session |
 | `docs/SESSION-2026-09-26.md` | What was built, what was decided, and why |
+| `diagrams/` | Architecture and level-1 data-flow diagrams, as Markdown sources and PNG exports |
 
 ---
 
